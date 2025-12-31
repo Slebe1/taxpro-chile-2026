@@ -348,4 +348,4 @@ with col_summary:
         """, unsafe_allow_html=True)
     
     else:
-        st.i👈fo("👍 Ingresa tus datos en el panel izquierdo para ver tu historia financiera.")
+             st.info("Ingresa tus datos en el panel izquierdo para ver tu historia financiera.")
