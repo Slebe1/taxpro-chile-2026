@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import textwrap
 
 # --- 1. CONFIGURACIÓN INICIAL ---
 st.set_page_config(
@@ -32,7 +31,6 @@ st.markdown("""
     .row-item.bold { font-weight: 600; color: #1D1D1F; border-top: 1px solid #E5E5EA; padding-top: 8px; margin-top: 8px; }
     .row-item.sub { font-size: 13px; color: #888; padding-left: 10px; }
     
- 
     /* RESULTADO FINAL */
     .result-box { background: #FFF8F0; border-left: 6px solid #FF9500; padding: 30px; border-radius: 15px; margin-top: 20px; }
     
@@ -66,13 +64,13 @@ def procesar_calculo(datos):
                  (120, 310, 0.35, 23.32), (310, 999999, 0.40, 38.82)]
     
     # --- PASO 1: INGRESOS BRUTOS ---
-ingresos_brutos = datos['sueldo'] + datos['hon_bruto'] + datos['retiros'] + datos['otros']
+    ingresos_brutos = datos['sueldo'] + datos['hon_bruto'] + datos['retiros'] + datos['otros']
     
     # --- PASO 2: DEPURACIÓN Y BASES ---
-
+    
     # A. Previsión (Ingeniería Inversa)
     # NOTA AUDITOR: Se actualiza tope imponible a 87.8 UF para 2026
-           tope_anual_pesos = 87.8 * 12 * datos['
+    tope_anual_pesos = 87.8 * 12 * datos['uf'] 
     
     # Brutear sueldo para estimar cupo usado
     sueldo_imponible_estimado = datos['sueldo'] / 0.815
@@ -289,34 +287,31 @@ with col_summary:
         """, unsafe_allow_html=True)
         
         # --- TARJETA 3: LA BALANZA (ACTUALIZADA CON TRAMO) ---
+        
         saldo_hon = res['desglose_creditos'][2]
         color_hon = "#34C759" if saldo_hon >= 0 else "#FF3B30"
         signo_hon = "+" if saldo_hon >= 0 else ""
         
-        # Formateo del tramo
+        # Formateo del Tramo
         pct_tramo = res['tasa_marginal'] * 100
         if pct_tramo == 0:
             texto_tramo = "TRAMO EXENTO (0%)"
-            estilo_tramo = "background-color: #E5E5EA; color: #1D1D1F;"
+            estilo_tramo = "background-color: #E5E5EA; color: #1D1D1F;" 
         else:
-            texto_tramo = (
-                f"TRAMO DEL {pct_tramo:.1f}%"
-                if pct_tramo % 1 != 0
-                else f"TRAMO DEL {int(pct_tramo)}%"
-            )
+            texto_tramo = f"TRAMO DEL {pct_tramo:.1f}%" if pct_tramo % 1 != 0 else f"TRAMO DEL {int(pct_tramo)}%"
             estilo_tramo = "background-color: #FFF0E0; color: #FF9500; border: 1px solid #FFDbb3;"
-        
-        # Construir el HTML sin sangría (usando textwrap.dedent)
-        balanza_html = textwrap.dedent(f"""
+
+        st.markdown(f"""
         <div class="clean-card">
             <div class="step-number">PASO 3: LA BALANZA</div>
             <div class="card-title">Impuesto vs. Lo que ya tienes</div>
-            <div style="display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px;
-                 font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; {estilo_tramo}">
+            
+            <div style="display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; {estilo_tramo}">
                 {texto_tramo}
             </div>
+            
             <div class="row-item bold" style="font-size:16px; margin-bottom:15px; margin-top:0px;">
-                <span>IMPUESTO ANUAL DETERMINADO</span>
+                <span>IMPUESTO ANUAL DETERMINADO</span> 
                 <span style="color:#1D1D1F">{formato_pesos(res['impuesto_final'])}</span>
             </div>
             <div style="background-color:#F5F5F7; padding:10px; border-radius:10px;">
@@ -324,7 +319,7 @@ with col_summary:
                 <div class="row-item"><span>Impuesto Único (Sueldos):</span> <span>-{formato_pesos(res['desglose_creditos'][0])}</span></div>
                 <div class="row-item"><span>Crédito Empresa:</span> <span>-{formato_pesos(res['desglose_creditos'][1])}</span></div>
                 <div class="row-item">
-                    <span>Saldo Líquido Retenciones:</span>
+                    <span>Saldo Líquido Retenciones:</span> 
                     <span style="color:{color_hon}; font-weight:600">{signo_hon}{formato_pesos(saldo_hon)}</span>
                 </div>
                 <div class="row-item sub" style="line-height:1.2; margin-top:5px;">
@@ -332,19 +327,14 @@ with col_summary:
                 </div>
             </div>
         </div>
-        """)
-        
-        # Mostrar la tarjeta con Markdown
-        st.markdown(balanza_html, unsafe_allow_html=True)
-
-        
+        """, unsafe_allow_html=True)
         
         # --- TARJETA 4: FINAL ---
         if res['saldo_bolsillo'] <= 0:
             color_res = "#34C759"; texto_res = "TE DEVUELVEN"; signo = ""
         else:
             color_res = "#FF3B30"; texto_res = "TIENES QUE PAGAR"; signo = ""
-    
+
         st.markdown(f"""
         <div class="result-box">
             <div class="step-number">RESULTADO FINAL</div>
@@ -356,6 +346,6 @@ with col_summary:
             </div>
         </div>
         """, unsafe_allow_html=True)
-    
+
     else:
-             st.info("Ingresa tus datos en el panel izquierdo para ver tu historia financiera.")
+        st.info("Ingresa tus datos en el panel izquierdo para ver tu historia financiera.")
