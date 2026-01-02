@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import textwrap
 
 # --- 1. CONFIGURACIÓN INICIAL ---
 st.set_page_config(
