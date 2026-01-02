@@ -72,7 +72,7 @@ ingresos_brutos = datos['sueldo'] + datos['hon_bruto'] + datos['retiros'] + dato
 
     # A. Previsión (Ingeniería Inversa)
     # NOTA AUDITOR: Se actualiza tope imponible a 87.8 UF para 2026
-    tope_anual_pesos = 87.8 * 12 * datos['uf'] 
+           tope_anual_pesos = 87.8 * 12 * datos['
     
     # Brutear sueldo para estimar cupo usado
     sueldo_imponible_estimado = datos['sueldo'] / 0.815
