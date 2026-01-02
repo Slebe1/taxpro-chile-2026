@@ -325,9 +325,9 @@ with col_summary:
             <div class="row-item sub" style="line-height:1.2; margin-top:5px;">
             *Tu retención ({formato_pesos(res['retencion_hon_bruta'])}) pagó tu previsión ({formato_pesos(res['deuda_previsional'])}) y sobró {formato_pesos(saldo_hon)}.
         </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+        </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         
         # --- TARJETA 4: FINAL ---
