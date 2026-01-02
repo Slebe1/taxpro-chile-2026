@@ -66,11 +66,10 @@ def procesar_calculo(datos):
                  (120, 310, 0.35, 23.32), (310, 999999, 0.40, 38.82)]
     
     # --- PASO 1: INGRESOS BRUTOS ---
-    i
-    ngresos_brutos = datos['sueldo'] + datos['hon_bruto'] + datos['retiros'] + datos['otros']
+ingresos_brutos = datos['sueldo'] + datos['hon_bruto'] + datos['retiros'] + datos['otros']
     
     # --- PASO 2: DEPURACIÓN Y BASES ---
-    
+
     # A. Previsión (Ingeniería Inversa)
     # NOTA AUDITOR: Se actualiza tope imponible a 87.8 UF para 2026
     tope_anual_pesos = 87.8 * 12 * datos['uf'] 
