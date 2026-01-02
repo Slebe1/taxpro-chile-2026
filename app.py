@@ -290,44 +290,54 @@ with col_summary:
         """, unsafe_allow_html=True)
         
         # --- TARJETA 3: LA BALANZA (ACTUALIZADA CON TRAMO) ---
-        
         saldo_hon = res['desglose_creditos'][2]
         color_hon = "#34C759" if saldo_hon >= 0 else "#FF3B30"
         signo_hon = "+" if saldo_hon >= 0 else ""
         
-        # Formateo del Tramo
+        # Formateo del tramo
         pct_tramo = res['tasa_marginal'] * 100
         if pct_tramo == 0:
             texto_tramo = "TRAMO EXENTO (0%)"
-            estilo_tramo = "background-color: #E5E5EA; color: #1D1D1F;" 
+            estilo_tramo = "background-color: #E5E5EA; color: #1D1D1F;"
         else:
-            texto_tramo = f"TRAMO DEL {pct_tramo:.1f}%" if pct_tramo % 1 != 0 else f"TRAMO DEL {int(pct_tramo)}%"
+            texto_tramo = (
+                f"TRAMO DEL {pct_tramo:.1f}%"
+                if pct_tramo % 1 != 0
+                else f"TRAMO DEL {int(pct_tramo)}%"
+            )
             estilo_tramo = "background-color: #FFF0E0; color: #FF9500; border: 1px solid #FFDbb3;"
-        st.markdown(f"""<div class="clean-card">
+        
+        # Construir el HTML sin sangría (usando textwrap.dedent)
+        balanza_html = textwrap.dedent(f"""
+        <div class="clean-card">
             <div class="step-number">PASO 3: LA BALANZA</div>
             <div class="card-title">Impuesto vs. Lo que ya tienes</div>
             <div style="display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px;
-             font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; {estilo_tramo}">
-            {texto_tramo}
-        </div>
+                 font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; {estilo_tramo}">
+                {texto_tramo}
+            </div>
             <div class="row-item bold" style="font-size:16px; margin-bottom:15px; margin-top:0px;">
-            <span>IMPUESTO ANUAL DETERMINADO</span>
-            <span style="color:#1D1D1F">{formato_pesos(res['impuesto_final'])}</span>
-        </div>
+                <span>IMPUESTO ANUAL DETERMINADO</span>
+                <span style="color:#1D1D1F">{formato_pesos(res['impuesto_final'])}</span>
+            </div>
             <div style="background-color:#F5F5F7; padding:10px; border-radius:10px;">
-            <div style="font-size:12px; color:#888; font-weight:600; margin-bottom:5px;">TUS CRÉDITOS (A FAVOR)</div>
-            <div class="row-item"><span>Impuesto Único (Sueldos):</span> <span>-{formato_pesos(res['desglose_creditos'][0])}</span></div>
-            <div class="row-item"><span>Crédito Empresa:</span> <span>-{formato_pesos(res['desglose_creditos'][1])}</span></div>
-            <div class="row-item">
-                <span>Saldo Líquido Retenciones:</span>
-                <span style="color:{color_hon}; font-weight:600">{signo_hon}{formato_pesos(saldo_hon)}</span>
+                <div style="font-size:12px; color:#888; font-weight:600; margin-bottom:5px;">TUS CRÉDITOS (A FAVOR)</div>
+                <div class="row-item"><span>Impuesto Único (Sueldos):</span> <span>-{formato_pesos(res['desglose_creditos'][0])}</span></div>
+                <div class="row-item"><span>Crédito Empresa:</span> <span>-{formato_pesos(res['desglose_creditos'][1])}</span></div>
+                <div class="row-item">
+                    <span>Saldo Líquido Retenciones:</span>
+                    <span style="color:{color_hon}; font-weight:600">{signo_hon}{formato_pesos(saldo_hon)}</span>
+                </div>
+                <div class="row-item sub" style="line-height:1.2; margin-top:5px;">
+                    *Tu retención ({formato_pesos(res['retencion_hon_bruta'])}) pagó tu previsión ({formato_pesos(res['deuda_previsional'])}) y sobró {formato_pesos(saldo_hon)}.
+                </div>
+            </div>
         </div>
-            <div class="row-item sub" style="line-height:1.2; margin-top:5px;">
-            *Tu retención ({formato_pesos(res['retencion_hon_bruta'])}) pagó tu previsión ({formato_pesos(res['deuda_previsional'])}) y sobró {formato_pesos(saldo_hon)}.
-        </div>
-        </div>
-        </div>
-        """, unsafe_allow_html=True)
+        """)
+        
+        # Mostrar la tarjeta con Markdown
+        st.markdown(balanza_html, unsafe_allow_html=True)
+
         
         
         # --- TARJETA 4: FINAL ---
