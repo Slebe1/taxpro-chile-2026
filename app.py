@@ -303,8 +303,7 @@ with col_summary:
         else:
             texto_tramo = f"TRAMO DEL {pct_tramo:.1f}%" if pct_tramo % 1 != 0 else f"TRAMO DEL {int(pct_tramo)}%"
             estilo_tramo = "background-color: #FFF0E0; color: #FF9500; border: 1px solid #FFDbb3;"
-        st.markdown(f"""
-        <div class="clean-card">
+        st.markdown(f"""<div class="clean-card">
             <div class="step-number">PASO 3: LA BALANZA</div>
             <div class="card-title">Impuesto vs. Lo que ya tienes</div>
             <div style="display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px;
@@ -315,20 +314,20 @@ with col_summary:
             <span>IMPUESTO ANUAL DETERMINADO</span>
             <span style="color:#1D1D1F">{formato_pesos(res['impuesto_final'])}</span>
         </div>
-        <div style="background-color:#F5F5F7; padding:10px; border-radius:10px;">
+            <div style="background-color:#F5F5F7; padding:10px; border-radius:10px;">
             <div style="font-size:12px; color:#888; font-weight:600; margin-bottom:5px;">TUS CRÉDITOS (A FAVOR)</div>
-              <div class="row-item"><span>Impuesto Único (Sueldos):</span> <span>-{formato_pesos(res['desglose_creditos'][0])}</span></div>
+            <div class="row-item"><span>Impuesto Único (Sueldos):</span> <span>-{formato_pesos(res['desglose_creditos'][0])}</span></div>
             <div class="row-item"><span>Crédito Empresa:</span> <span>-{formato_pesos(res['desglose_creditos'][1])}</span></div>
             <div class="row-item">
-            <span>Saldo Líquido Retenciones:</span>
-            <span style="color:{color_hon}; font-weight:600">{signo_hon}{formato_pesos(saldo_hon)}</span>
+                <span>Saldo Líquido Retenciones:</span>
+                <span style="color:{color_hon}; font-weight:600">{signo_hon}{formato_pesos(saldo_hon)}</span>
         </div>
             <div class="row-item sub" style="line-height:1.2; margin-top:5px;">
-                *Tu retención ({formato_pesos(res['retencion_hon_bruta'])}) pagó tu previsión ({formato_pesos(res['deuda_previsional'])}) y sobró {formato_pesos(saldo_hon)}.
+            *Tu retención ({formato_pesos(res['retencion_hon_bruta'])}) pagó tu previsión ({formato_pesos(res['deuda_previsional'])}) y sobró {formato_pesos(saldo_hon)}.
         </div>
-        </div>
-        </div>
-        """, unsafe_allow_html=True)
+    </div>
+</div>
+""", unsafe_allow_html=True)
         
         
         # --- TARJETA 4: FINAL ---
