@@ -1,5 +1,24 @@
 import streamlit as st
 import pandas as pd
+import requests
+
+# --- 0. INDICADORES ECONÓMICOS (mindicador.cl) ---
+
+@st.cache_data(ttl=86400)
+def obtener_indicadores():
+    """Obtiene UF y UTA (UTM×12) desde mindicador.cl con caché de 24h."""
+    try:
+        resp = requests.get("https://mindicador.cl/api", timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        uf_valor = round(data["uf"]["valor"])
+        uta_valor = round(data["utm"]["valor"] * 12)
+        fecha = data["uf"]["fecha"][:10]
+        return {"uf": uf_valor, "uta": uta_valor, "fecha": fecha}
+    except Exception:
+        return {"uf": 39720, "uta": 834000, "fecha": None}
+
+indicadores = obtener_indicadores()
 
 # --- 1. CONFIGURACIÓN INICIAL ---
 st.set_page_config(
@@ -238,8 +257,12 @@ with col_inputs:
         auto_ret = st.toggle("Auto-Calcular Retención", value=True)
         man_ret = 0 if auto_ret else st.number_input("Retención Manual", value=0)
         with st.expander("⚙️ Parámetros"):
-            uta = st.number_input("Valor UTA", value=834000)
-            uf = st.number_input("Valor UF", value=39720)
+            uta = st.number_input("Valor UTA", value=indicadores["uta"], min_value=1)
+            uf = st.number_input("Valor UF", value=indicadores["uf"], min_value=1)
+            if indicadores["fecha"]:
+                st.caption(f"Valores obtenidos de mindicador.cl ({indicadores['fecha']})")
+            else:
+                st.caption("Valores por defecto (sin conexión a mindicador.cl)")
             # NOTA AUDITOR: Tasa Retención 2026 fijada en 15.25%
             tasa_ret = st.number_input("Tasa Retención %", value=15.25)
 
