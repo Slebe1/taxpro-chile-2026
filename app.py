@@ -46,6 +46,8 @@ st.markdown("""
 # --- 3. MOTOR TRIBUTARIO (AUDITADO) ---
 
 def calcular_impuesto_tabla(base_imponible, valor_uta, tabla_igc):
+    if valor_uta <= 0:
+        return 0
     base_uta = base_imponible / valor_uta
     factor, rebaja = 0, 0
     for tramo in tabla_igc:
@@ -106,6 +108,8 @@ def procesar_calculo(datos):
     inc = 0
     if datos['retiros'] > 0:
         tef = datos['tasa_emp'] / 100
+        if tef >= 1.0:
+            tef = 0.999
         inc = datos['retiros'] * (tef / (1 - tef))
         
     # E. Renta Bruta Global (Base preliminar)
@@ -137,6 +141,11 @@ def procesar_calculo(datos):
     
     # --- PASO 3: IMPUESTOS ---
     # Lógica de tramos manual para sacar la tasa marginal
+    if datos['uta'] <= 0:
+        return {"ingresos_brutos": ingresos_brutos, "desglose_ingresos": (datos['sueldo'], datos['hon_bruto'], datos['retiros'], datos['otros']),
+                "descuentos_total": 0, "desglose_descuentos": (0, 0, 0, 0), "base_imponible": 0, "impuesto_final": 0,
+                "tasa_marginal": 0, "creditos_total": 0, "desglose_creditos": (0, 0, 0), "saldo_bolsillo": 0,
+                "retencion_hon_bruta": 0, "deuda_previsional": 0}
     base_uta = base_imponible / datos['uta']
     factor, rebaja = 0, 0
     tasa_marginal = 0 
@@ -222,7 +231,7 @@ with col_inputs:
         reg = c1.selectbox("Régimen", ["ProPyme", "Semi Integrado"])
         # NOTA AUDITOR: Tasa ProPyme ajustada a 12.5% por defecto
         tasa_defecto = 12.5 if "ProPyme" in reg else 27.0
-        tasa = c2.number_input("Tasa TEF %", value=tasa_defecto)
+        tasa = c2.number_input("Tasa TEF %", value=tasa_defecto, max_value=99.9)
         otros = st.number_input("Otros Ingresos", value=0)
 
     with tab3:
@@ -238,8 +247,8 @@ with col_inputs:
         auto_ret = st.toggle("Auto-Calcular Retención", value=True)
         man_ret = 0 if auto_ret else st.number_input("Retención Manual", value=0)
         with st.expander("⚙️ Parámetros"):
-            uta = st.number_input("Valor UTA", value=834000)
-            uf = st.number_input("Valor UF", value=39720)
+            uta = st.number_input("Valor UTA", value=834000, min_value=1)
+            uf = st.number_input("Valor UF", value=39720, min_value=1)
             # NOTA AUDITOR: Tasa Retención 2026 fijada en 15.25%
             tasa_ret = st.number_input("Tasa Retención %", value=15.25)
 
